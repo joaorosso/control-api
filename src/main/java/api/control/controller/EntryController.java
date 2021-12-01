@@ -1,7 +1,9 @@
 package api.control.controller;
 
+import api.control.entity.Account;
 import api.control.entity.Entry;
 import api.control.repository.EntryRepository;
+import api.control.service.TokenService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,14 +20,20 @@ public class EntryController {
     @Autowired
     private EntryRepository entryRepository;
 
+    @Autowired
+    private TokenService tokenService;
+
     @PostMapping
-    public Entry create(@RequestBody Entry entry) {
+    public Entry create(@RequestBody Entry entry, @RequestHeader (name="Authorization") String token) {
+        UUID accountId = tokenService.getSubjectId(token);
+        entry.setAccount(new Account(accountId));
         return entryRepository.save(entry);
     }
 
     @GetMapping
-    public List<Entry> get() {
-        return entryRepository.findAll();
+    public List<Entry> get(@RequestHeader (name="Authorization") String token) {
+        UUID accountId = tokenService.getSubjectId(token);
+        return entryRepository.findByAccountId(accountId);
     }
 
     @PutMapping("/{id}")

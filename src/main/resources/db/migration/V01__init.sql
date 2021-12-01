@@ -10,9 +10,13 @@ CREATE TABLE account (
     id uuid DEFAULT uuid_generate_v4(),
     name VARCHAR(50) NOT NULL,
     email VARCHAR(50) NOT NULL UNIQUE,
-    password VARCHAR(12) NOT NULL,
+    username VARCHAR(20) NOT NULL UNIQUE,
+    password VARCHAR(60) NOT NULL,
     PRIMARY KEY (id)
 );
+
+INSERT INTO account (name, email, username, password)
+    VALUES ('admin', 'admin@gmail.com', 'admin', '$2a$12$5OK3yU8vciIk5ZhwI1cbx.m8THilxFM3ggLaLYGHtY1K9Dl122yfu');
 
 CREATE TABLE entry (
     id uuid DEFAULT uuid_generate_v4(),
